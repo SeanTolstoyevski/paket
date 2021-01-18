@@ -62,7 +62,7 @@ type Datas map[string]Values
 // Returns error for the wrong size or  creating bytes.
 func CreateRandomBytes(l uint8) ([]byte, error) {
 	if l < 16 || l > 32 {
-		freeerr := errors.New("Minimum value for l is 16, maximum value for l is 32.")
+		freeerr := errors.New("minimum value for l is 16, maximum value for l is 32")
 		return nil, freeerr
 	}
 	res := make([]byte, l)
@@ -171,13 +171,12 @@ func New(key []byte, file string, table Datas) (*Paket, error) {
 
 		if fInfo.Size() > 0 {
 			return &Paket{file: f, Table: table, Key: key}, nil
-		} else {
-			perr := "There is no data in the file: " + f.Name()
-			panic(perr)
 		}
+		perr := "there is no data in the file: " + f.Name()
+		panic(perr)
 	}
 
-	freeerr := errors.New("Key must be 16, 24 or 32 length.")
+	freeerr := errors.New("key must be 16, 24 or 32 length")
 	return nil, freeerr
 }
 
@@ -268,7 +267,7 @@ func (p *Paket) GetLen() (int, int, error) {
 		}
 		return orgval, encval, nil
 	}
-	freeerr := errors.New("Map cannot be less than 1 in length.")
+	freeerr := errors.New("map cannot be less than 1 in length")
 	return 0, 0, freeerr
 }
 

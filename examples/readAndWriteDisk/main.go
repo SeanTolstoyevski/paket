@@ -1,5 +1,4 @@
 // Copyright (C) 2021 SeanTolstoyevski -  mailto:s.tolstoyevski@protonmail.com
-//
 // The source code of this project is licensed under the MIT license.
 // You can find the license on the repo's main folder.
 // Provided without warranty of any kind.
