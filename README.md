@@ -34,11 +34,12 @@ This module consists of two parts:
 
 To use Paket, you need to create a package file with the cmd tool.
 
+You can install it like a normal golang module:
 `go get github.com/SeanTolstoyevski/paket`
 
 ### Usage
 
-```package -help
+```paket -help
 Usage of paket.exe:
   -f string
         Folder containing files to be encrypted.
@@ -49,7 +50,7 @@ Usage of paket.exe:
         If left null, hash checks will not work. (default true)
   -k string
         Key for encrypting files. It must be 16, 24, or 32 lenght in bytes.
-        If you leave it null, the tool generates one randomly byte  and prints value to the console. (default "8882af0e97faefe11953660eec14ea94")
+        If this parameter is null, the tool generates one randomly byte  and prints value to the console. (default "8882af0e97faefe11953660eec14ea94")
   -o string
         The file to which your encrypted data will be written.
          If there is a file with the same name, you will be warned. (default "data.pack")
@@ -110,8 +111,6 @@ func init() {
 **Great**, we created our first package. We're going to write some code now.
 If you want you can examine the codes in the [examples folder](https://github.com/SeanTolstoyevski/paket/examples).
 
-
-
 ## ⛑ If you like this:
 
 * 📝🖊 Please consider creating a PR or emailing me for grammatical errors and other language issues in documents. English is not my native language. I'm developing.
@@ -121,3 +120,16 @@ If you want you can examine the codes in the [examples folder](https://github.co
 * 💰🤑 If you don't want to do any of them and want to give financial support (like a cup of french press), you can send an e-mail
 
 * 🌟⭐ And send a star. This is the greatest favor. I'm looking for a job. Employers are not so optimistic in Turkey against disabled users. But any good project with a few stars can win over employers' hearts.
+
+
+## FAQ:
+
+* Why name **Paket**?
+
+> Package in English, "paket" in Turkish.
+I was looking for a module where I could package my data. This name came first to mind.
+
+* Which Go versions are compatible?
+
+> Tested with Go 15.3 64 bit on windows 10 64 bit.
+Probably compatible up to go1.12-13.
