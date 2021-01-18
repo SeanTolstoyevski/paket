@@ -12,7 +12,7 @@
 //Other exported functions and variables are for the cmd tool.
 // If you only want to read the package created with the cmd tool,
 // you can create a new package method with New().
-package paket
+package pengine
 
 import (
 	"bytes"
