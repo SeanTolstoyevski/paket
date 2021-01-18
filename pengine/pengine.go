@@ -205,7 +205,7 @@ func (p *Paket) GetFile(filename string, decrypt, shaControl bool) (*[]byte, boo
 	file, found := p.Table[filename]
 	var content []byte
 	if !found {
-		panic(string("dosya map'te bulunamadı: " + filename))
+		panic(string("File not found on map: " + filename))
 	}
 	lenght, err := strconv.Atoi(file[3])
 	if err != nil {
