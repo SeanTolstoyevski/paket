@@ -1,6 +1,6 @@
 # 🔑 Paket - A vault to packaging and encrypt your files in golang!
 
- **Godoc**: [CMD Tool](https://godoc.org/github.com/SeanTolstoyevski/paket) | [pengine (paket engine)](https://godoc.org/github.com/SeanTolstoyevski/paket/pengine/)
+**Godoc**: [CMD Tool](https://godoc.org/github.com/SeanTolstoyevski/paket) | [pengine (paket engine)](https://godoc.org/github.com/SeanTolstoyevski/paket/pengine/)
 
 **Main Repository**: [github.com/SeanTolstoyevski/paket](https://github.com/SeanTolstoyevski/paket/)
 

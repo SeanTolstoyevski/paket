@@ -7,32 +7,36 @@
 package main
 
 import (
-	paket "github.com/SeanTolstoyevski/paket/pengine"
 	"fmt"
+	paket "github.com/SeanTolstoyevski/paket/pengine"
 	"os"
 )
 
-var(
+var (
 	packfile = "./../data.pack"
-	packkey = []byte("bf40e1d71af5ca0be1e2b02bbcf42d3f")
+	packkey  = []byte("bf40e1d71af5ca0be1e2b02bbcf42d3f")
 )
 
 func main() {
-	encFiles, err := paket.New(packkey, packfile, Data); errHandler(err)
+	encFiles, err := paket.New(packkey, packfile, Data)
+	errHandler(err)
 	defer encFiles.Close()
 
-	for key, _ := range Data {
-		wf, err := os.Create(key); errHandler(err)
-		file, _, err := encFiles.GetFile(key, true, true); errHandler(err)
+	for key := range Data {
+		wf, err := os.Create(key)
+		errHandler(err)
+		file, _, err := encFiles.GetFile(key, true, true)
+		errHandler(err)
 		fmt.Printf("%s file is writing...\n", key)
 		wf.Write(*file)
-		cerr := wf.Close(); errHandler(cerr)
-		
+		cerr := wf.Close()
+		errHandler(cerr)
+
 	}
 }
 
 func errHandler(err error) {
-if err != nil {
+	if err != nil {
 		panic(err)
 	}
 }

@@ -3,7 +3,7 @@
 // You can find the license on the repo's main folder.
 // Provided without warranty of any kind.
 
-//low level APIs for paket.
+//Package pengine low-level APIs for paket.
 //
 // Before using it, you need to create a file with the cmd tool. (If you are not creating a new tool or API).
 //
@@ -51,10 +51,10 @@ type Values [6]string
 //
 // Paket reads the requested file through this map.
 //
-// string refers to the file name, values refers to information about the file (lenght, sha value etc.).
+// string refers to the file name, values refers to information about the file (length, sha value etc.).
 type Datas map[string]Values
 
-// generates random bytes of the given size.
+// CreateRandomBytes generates random bytes of the given size.
 //The maximum value should be 32 and the minimum value should be 16.
 //
 //Used to generate a random key if the user has not specified a key. (for cmd tool)
@@ -94,17 +94,16 @@ func Encrypt(key, data []byte) ([]byte, error) {
 	v := ciphertext[:aes.BlockSize]
 
 	_, rerr := io.ReadFull(rand.Reader, v)
-	if rerr  != nil {
-		return nil, rerr 
-    }
+	if rerr != nil {
+		return nil, rerr
+	}
 
 	s := cipher.NewCFBEncrypter(block, v)
-s.XORKeyStream(ciphertext[aes.BlockSize:], data)
-
+	s.XORKeyStream(ciphertext[aes.BlockSize:], data)
 	return ciphertext, nil
 }
 
-// It decrypts the encrypted data with the key.
+// Decrypt decrypts the encrypted data with the key.
 //
 // Uses the CFB mode.
 //
@@ -125,27 +124,27 @@ func Decrypt(key, data []byte) ([]byte, error) {
 	return data, nil
 }
 
-// Struct that keeps the information of the file to be read.
+// Paket that keeps the information of the file to be read.
 // It should be created with New.
 type Paket struct {
 	// Key value for reading the file's data.
 	// As a warning, you shouldn't just create a plaintext key.
-	Key		[]byte
+	Key []byte
 	// Map value that keep the information of files in Paket.
-	// It must be at least 1 lenght.
-// Otherwise, panic occurs at runtime.
+	// It must be at least 1 length.
+	// Otherwise, panic occurs at runtime.
 	//
 	// Usually created by the cmd tool.
-	Table		Datas
-//non-exported value created for access the file.
+	Table Datas
+	//non-exported value created for access the file.
 	// This value is opened by New with filename parameter.
-	file		*os.File
+	file *os.File
 }
 
-// Creates a new Package method.
+// New Creates a new Package method.
 // This method should be used to read the files.
 //
-// key parameter refers to the encryption key. It must be 16, 24 or 32 lenght. Returns nil and error for keys of incorrect length.
+// key parameter refers to the encryption key. It must be 16, 24 or 32 length. Returns nil and error for keys of incorrect length.
 //
 // Panic occurs if the specified file does not exist.
 //
@@ -156,11 +155,11 @@ type Paket struct {
 func New(key []byte, file string, table Datas) (*Paket, error) {
 	l := len(key)
 	if l == 16 || l == 24 || l == 32 {
-	if !Exists(file) {
-		panic(string(file + " paket not found."))
-	}
+		if !Exists(file) {
+			panic(string(file + " paket not found."))
+		}
 
-	f, err := os.Open(file)
+		f, err := os.Open(file)
 		if err != nil {
 			panic(err)
 		}
@@ -178,11 +177,11 @@ func New(key []byte, file string, table Datas) (*Paket, error) {
 		}
 	}
 
-	freeerr := errors.New("Key must be 16, 24 or 32 lenght.")
+	freeerr := errors.New("Key must be 16, 24 or 32 length.")
 	return nil, freeerr
 }
 
-// Returns the content of the requested file.
+// GetFile Returns the content of the requested file.
 //
 // If the file cannot be found in the map and the length cannot be read, a panic occurs.
 //
@@ -207,15 +206,15 @@ func (p *Paket) GetFile(filename string, decrypt, shaControl bool) (*[]byte, boo
 	if !found {
 		panic(string("File not found on map: " + filename))
 	}
-	lenght, err := strconv.Atoi(file[3])
+	length, err := strconv.Atoi(file[3])
 	if err != nil {
 		panic(err)
 	}
-		start, err := strconv.Atoi(file[0])
+	start, err := strconv.Atoi(file[0])
 	if err != nil {
 		panic(err)
 	}
-	content = make([]byte, lenght)
+	content = make([]byte, length)
 	_, serr := p.file.Seek(int64(start), 0)
 	if serr != nil {
 		return nil, false, serr
@@ -233,7 +232,7 @@ func (p *Paket) GetFile(filename string, decrypt, shaControl bool) (*[]byte, boo
 		if shaControl {
 			decSha := []byte(fmt.Sprintf("%x", sha256.Sum256(decdata)))
 			encSha := []byte(file[4])
-			return  &decdata, bytes.Equal(decSha, encSha), nil
+			return &decdata, bytes.Equal(decSha, encSha), nil
 		}
 		return &decdata, false, nil
 	case false:
@@ -248,17 +247,17 @@ func (p *Paket) GetFile(filename string, decrypt, shaControl bool) (*[]byte, boo
 	}
 }
 
-// Returns the original and encrypted lengths of all files contained in Paket.
+// GetLen Returns the original and encrypted lengths of all files contained in Paket.
 // First variable refers to the original, second variable to the encrypted data.
 // In the meantime, no control is made. The same will return as the values are written into the table.
 //
 // Normally values should be in bytes.
 //
-// returns an error if lenght is less than 1. In this case, other variables are 0.
+// returns an error if length is less than 1. In this case, other variables are 0.
 func (p *Paket) GetLen() (int, int, error) {
 	var orgval int
 	var encval int
-if len(p.Table) > 0 {
+	if len(p.Table) > 0 {
 		for _, value := range p.Table {
 			// oi = original integer
 			// ei = encrypted integer
@@ -289,16 +288,14 @@ func (p *Paket) Close() error {
 	return err
 }
 
-
-
 // Source: https://stackoverflow.com/a/12527546/13431469
 //
-//a guarantee about the existence of file.
+// a guarantee about the existence of file.
 func Exists(name string) bool {
-    if _, err := os.Stat(name); err != nil {
-        if os.IsNotExist(err) {
-            return false
-        }
-    }
-    return true
+	if _, err := os.Stat(name); err != nil {
+		if os.IsNotExist(err) {
+			return false
+		}
+	}
+	return true
 }

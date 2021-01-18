@@ -2,15 +2,17 @@ package pengine_test
 
 import (
 	"bytes" // for equal function
-	"testing"
 	"github.com/SeanTolstoyevski/paket/pengine"
+	"testing"
 )
 
 var globpaket *pengine.Paket
 
-var testdata = []byte("this is paket test")
-var testkey = []byte("b9e0a869abb532bfccd6bd6a8e624753")
-var 	data = make(pengine.Datas)
+var (
+	testdata = []byte("this is paket test")
+	testkey  = []byte("b9e0a869abb532bfccd6bd6a8e624753")
+	data     = make(pengine.Datas)
+)
 
 func TestCreateRandomBytesLenght(t *testing.T) {
 	bytes, _ := pengine.CreateRandomBytes(32)
@@ -22,7 +24,7 @@ func TestCreateRandomBytesLenght(t *testing.T) {
 }
 
 func TestEncryptionandDecryption(t *testing.T) {
-	encdata, err	 := pengine.Encrypt(testkey, testdata)
+	encdata, err := pengine.Encrypt(testkey, testdata)
 	if err != nil {
 		t.Error("Encrypting error", err)
 	}
@@ -36,7 +38,6 @@ func TestEncryptionandDecryption(t *testing.T) {
 }
 
 func TestNew(t *testing.T) {
-
 	datas, err := pengine.New(testkey, "testdata/data.pack", data)
 	if err != nil {
 		t.Error("Paket creation error", err)
@@ -45,7 +46,7 @@ func TestNew(t *testing.T) {
 	if err != nil {
 		t.Error("Error in GetLen.", err)
 	}
-	if enclen == 0 || orglen == 0  || orglen < 1 || enclen < 1 {
+	if enclen == 0 || orglen == 0 || orglen < 1 || enclen < 1 {
 		t.Error("Error in lenght  query. The wrong value.", enclen, orglen)
 	}
 	_, sha, err := datas.GetFile("George Orwell - Animal Farm.pdf", true, true)
@@ -65,7 +66,7 @@ func TestNew(t *testing.T) {
 	// I will add all the scenarios as I find time.
 	cerr := datas.Close()
 	if cerr != nil {
-		t.Error(cerr )
+		t.Error(cerr)
 	}
 }
 
