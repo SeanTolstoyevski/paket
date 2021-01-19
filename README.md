@@ -41,6 +41,7 @@ You can install it like a normal golang module:
 
 ### Usage
 
+Let's run the `-help` command of the Paket to see if it has been installed successfully.  
 to read the help text:
 
 ```cmd
@@ -130,7 +131,6 @@ If you want you can examine the codes in the [examples folder](https://github.co
 * 💰🤑 If you don't want to do any of them and want to give financial support (like a cup of french press), you can send an e-mail
 
 * 🌟⭐ And send a star. This is the greatest favor. I'm looking for a job. Employers are not so optimistic in Turkey against disabled users. But any good project with a few stars can win over employers' hearts.
-
 
 ## FAQ:
 
