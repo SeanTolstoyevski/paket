@@ -1,12 +1,12 @@
 # 🔑 Paket - A vault to packaging and encrypt your files in golang!
 
-**Godoc**: [CMD Tool](https://godoc.org/github.com/SeanTolstoyevski/paket) | [pengine (paket engine)](https://godoc.org/github.com/SeanTolstoyevski/paket/pengine/)
+*[Godoc: CMD Tool](https://godoc.org/github.com/SeanTolstoyevski/paket) | [Godoc: pengine (paket engine)](https://godoc.org/github.com/SeanTolstoyevski/paket/pengine/)
 
 **Main Repository**: [github.com/SeanTolstoyevski/paket](https://github.com/SeanTolstoyevski/paket/)
 
 * * * * * *
 
-Welcome to  Paket!
+## Welcome to  Paket!
 
 We recommend that you take a look at the items below before using this module.  
 The world of encryption and encryption is a **sensitive topic**. It is important to know what you are doing and what this module actually does.
@@ -31,17 +31,19 @@ If enough people write to add new algorithms, we will add new algorithms to the 
 ## Installation:
 
 This module consists of two parts:
-1. CMD tool - command- ine tool for encrypting and packaging files.
+1. CMD tool - command-line tool for encrypting and packaging files.
 2. "pengine" (paket engine) - subfolder that provides low-level APIs (reading encrypted datas, verifications etc...).
 
 To use Paket, you need to create a package file with the cmd tool.
 
 You can install it like a normal golang module:  
-`go get github.com/SeanTolstoyevski/paket`
+`go get -u github.com/SeanTolstoyevski/paket`
 
 ### Usage
 
-```
+to read the help text:
+
+```cmd
 cmd>paket -help
 Usage of paket.exe:
   -f string
@@ -66,7 +68,9 @@ Usage of paket.exe:
 
 **Warning**: If you leave the key blank, the system randomly generates a key.
 
-Make sure the gopath / bin directory is appended to the path variables.
+Make sure the **gopath  and gopath/ bin** directory is appended to the path variables.
+
+You can create a package with something like:
 
 `paket -f=mydatas -o=data.dat`
 
@@ -87,6 +91,7 @@ so:
 Next, a go file like this is created.  
 This is the table that keeps the information of your files.
 
+The generated go code would look like this.  
 Default name: PaketTable.go (see `paket -help`)
 
 ```
