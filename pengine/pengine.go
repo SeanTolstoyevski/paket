@@ -1,4 +1,4 @@
-// Copyright (C) 2021 SeanTolstoyevski -  mailto:s.tolstoyevski@protonmail.com
+// Copyright (C) 2021 SeanTolstoyevski -  mailto:seantolstoyevski@protonmail.com
 // The source code of this project is licensed under the MIT license.
 // You can find the license on the repo's main folder.
 // Provided without warranty of any kind.
@@ -36,7 +36,7 @@ import (
 // 2: length of the original file.
 //
 // 3: length of the encrypted data.
-// ❕‼ Note: Gives [2]-[1] length of file. However, it may be more correct to write for security.
+// Note: Gives [2]-[1] length of file. However, it may be more correct to write for security.
 //
 //4: Hash of the original file.
 //
@@ -62,15 +62,13 @@ type Datas map[string]Values
 // Returns error for the wrong size or  creating bytes.
 func CreateRandomBytes(l uint8) ([]byte, error) {
 	if l < 16 || l > 32 {
-		freeerr := errors.New("minimum value for l is 16, maximum value for l is 32")
-		return nil, freeerr
+		return nil, errors.New("minimum value for l is 16, maximum value for l is 32")
 	}
 	res := make([]byte, l)
 	_, err := rand.Read(res)
 	if err != nil {
 		return nil, err
 	}
-
 	return res, nil
 }
 
@@ -175,9 +173,7 @@ func New(key []byte, file string, table Datas) (*Paket, error) {
 		perr := "there is no data in the file: " + f.Name()
 		panic(perr)
 	}
-
-	freeerr := errors.New("key must be 16, 24 or 32 length")
-	return nil, freeerr
+	return nil, errors.New("key must be 16, 24 or 32 length")
 }
 
 // GetFile Returns the content of the requested file.
@@ -267,8 +263,8 @@ func (p *Paket) GetLen() (int, int, error) {
 		}
 		return orgval, encval, nil
 	}
-	freeerr := errors.New("map cannot be less than 1 in length")
-	return 0, 0, freeerr
+
+	return 0, 0, errors.New("map cannot be less than 1 in length")
 }
 
 // Close Closes the opened file (see Paket.file (non-exported)).

@@ -1,26 +1,37 @@
-# 🔑 Paket - A vault to packaging and encrypt your files in golang!
+# 🔑 Paket – A vault to packaging and encrypt/decrypt your files in golang!
 
-*[Godoc: CMD Tool](https://godoc.org/github.com/SeanTolstoyevski/paket) | [Godoc: pengine (paket engine)](https://godoc.org/github.com/SeanTolstoyevski/paket/pengine/)
+[pkg.go.dev](https://pkg.go.dev/github.com/SeanTolstoyevski/paket/) | [godoc.org](https://godoc.org/github.com/SeanTolstoyevski/paket)
 
-**Main Repository**: [github.com/SeanTolstoyevski/paket](https://github.com/SeanTolstoyevski/paket/)
+## Table of Contents
 
-* * * * * *
+* [🔊 Informations](#-informations)
 
-## Welcome to  Paket!
+* [👩‍🏭👨‍🏭 What does it do](#what-does-it-do)
+
+* [🏎 Installation](#installation)
+
+* [Usage of cmd tool](#usage-of-cmd-tool)
+
+	* [Create a package file with cmd tool](#create-a-package-file-with-cmd-tool)
+
+* [Examples](#examples)
+
+* [😋 If you like this](#-if-you-like-this)
+
+* [🤔 FAQ](#-faq)
+
+## 🔊 Informations
+
+Hey,  
+this is not for archiving your files like 7-zip.
 
 We recommend that you take a look at the items below before using this module.  
-The world of encryption and encryption is a **sensitive topic**. It is important to know what you are doing and what this module actually does.
-
-* What does it do, what can I use it for?
-
-Imagine you are producing a game. You will probably have carefully designed animations and sound effects. You do not want users to receive this data. If we think for this scenario; The package encrypts the files in the specified folder using AES with a key you specify. And it combines all encrypted files into a single file. Calculates the hash of the encrypted and unencrypted version of the file. Saves to a table. This is a little shield for people trying to deceive you.  
-Then, you can easily retrieve the decoded or encrypted version of your file from the encrypted file.  
-Normally, you should create a system to securely encrypt and decrypt your files.  
-This is a ready system :) .
+The world of encryption and encryption is a **complex  topic**. It is important to know what you are doing and what this module actually does.
 
 * Is it really secure? How secure is it?
 
-To be honest, the person who wants to get the data can crack anything if he or she  tries. Especially if the program you are distributing runs directly on the user's computer and all data is with the program. However, what AES and Package do is complex enough. Don't Remember, every executable file is sensitive to disassembly.  
+Frankly the person who wants to get the data can crack anything if he or she  tries. Especially if the program you are distributing runs directly on the user's computer and all data is with the program. However, what AES and Package do is complex enough.  
+Don't Remember, **every executable file is sensitive to disassembly**.  
 You can pass your files through other complex processes before encrypting them. However, this causes your program to load files into memory slowly at run time.
 
 * What encryption algorithm does it use?
@@ -28,21 +39,28 @@ You can pass your files through other complex processes before encrypting them. 
 AES CFB.  
 If enough people write to add new algorithms, we will add new algorithms to the extent that golang supports it.
 
-## Installation:
+## 👩‍🏭👨‍🏭 What does it do?
+
+Imagine you are producing a game. You will probably have carefully designed animations and sound effects. You do not want users to receive this data.  
+If we think for this scenario; The package encrypts the files in the specified folder using AES with a key you specify. And it combines all encrypted files into a single file. Calculates the hash of the encrypted and unencrypted version of the file. Saves to a table. This is a little shield for people trying to deceive you.  
+Then, you can easily retrieve the decoded or encrypted version of your file from the encrypted file.  
+Normally you should create a system to securely encrypt and decrypt your files.  
+This is a ready system 😎 .
+
+## 🏎 Installation
 
 This module consists of two parts:
-1. CMD tool - command-line tool for encrypting and packaging files.
-2. "pengine" (paket engine) - subfolder that provides low-level APIs (reading encrypted datas, verifications etc...).
+1. CMD tool – command-line tool for encrypting and packaging files.
+2. "pengine" (paket engine) – subfolder that provides low-level APIs (reading encrypted datas, verifications etc...).
 
 To use Paket, you need to create a package file with the cmd tool.
 
 You can install it like a normal golang module:  
 `go get -u github.com/SeanTolstoyevski/paket`
 
-### Usage
+## Usage of CMD Tool
 
-Let's run the `-help` command of the Paket to see if it has been installed successfully.  
-to read the help text:
+Let's run the `-help` command of the Paket to see if it has been installed successfully:
 
 ```cmd
 cmd>paket -help
@@ -67,9 +85,9 @@ Usage of paket.exe:
          It is created as 'package main.' (default "PaketTable.go")
 ```
 
-**Warning**: If you leave the key blank, the system randomly generates a key.
+**Warning**: If the key is null, the system randomly generates a key.
 
-Make sure the **gopath  and gopath/ bin** directory is appended to the path variables.
+### Create a package file with cmd tool
 
 You can create a package with something like:
 
@@ -77,7 +95,7 @@ You can create a package with something like:
 
 Example output:
 
-```
+```cmd
 ❗❕ Warning! Your random key. Please note: 092f8e0b25b0eeea32037e716dfcf2bc
 3 files were found in mydatas folder.
 Comedy of Errors (complete text) - Shakespeare.txt file is encrypting. Size: 0.9117 MB
@@ -93,9 +111,8 @@ Next, a go file like this is created.
 This is the table that keeps the information of your files.
 
 The generated go code would look like this.  
-Default name: PaketTable.go (see `paket -help`)
 
-```
+```go
 //important: You can edit this file. However, you need to know what you are doing.
 // *panic* may occur.
 
@@ -120,19 +137,25 @@ func init() {
 ```
 
 **Great**, we created our first package. We're going to write some code now.  
+
+## Examples
+
 If you want you can examine the codes in the [examples folder](https://github.com/SeanTolstoyevski/paket/examples).
 
-## ⛑ If you like this:
 
-* 📝🖊 Please consider creating a PR or emailing me for grammatical errors and other language issues in documents. English is **not my native language**. I'm advancing.
 
-* 🤗 If you can test for Linux and Darwin, that would be a great  for me. I am a blind software developer. I cannot set up an environment in Linux that can develop and test these projects. Linux's accessibility is not as good as Windows. No mac. I'll try to test as much as possible with the built-in `go test` though.
+
+## 😋 If you like this
+
+* 📝🖊 Please consider creating a PR or emailing me for grammatical errors and other language issues in documents. English is **not my native language**.
+
+* If you can test for Linux and Darwin, that would be a great  for me. I am a blind software developer. I cannot set up an environment in Linux that can develop and test these projects. Linux's accessibility is not as good as Windows. No mac. I'll try to test as much as possible with the built-in `go test` though.
 
 * 💰🤑 If you don't want to do any of them and want to give financial support (like a cup of french press), you can send an e-mail
 
 * 🌟⭐ And send a star. This is the greatest favor. I'm looking for a job. Employers are not so optimistic in Turkey against disabled users. But any good project with a few stars can win over employers' hearts.
 
-## FAQ:
+## 🤔 FAQ
 
 * Why name **Paket**?
 

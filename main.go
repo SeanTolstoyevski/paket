@@ -1,4 +1,4 @@
-// Copyright (C) 2021 SeanTolstoyevski -  mailto:s.tolstoyevski@protonmail.com
+// Copyright (C) 2021 SeanTolstoyevski - mailto:seantolstoyevski@protonmail.com
 //
 // The source code of this project is licensed under the MIT license.
 // You can find the license on the repo's main folder.
@@ -19,52 +19,46 @@ import (
 )
 
 var (
-	randBytes, raerr = paket.CreateRandomBytes(16)
-	sKeyDefault      = fmt.Sprintf("%x", randBytes)
-)
+	randBytes, raerr = paket.CreateRandomBytes(32)
+	KeyDefault       = fmt.Sprintf("%x", sha256.Sum256(randBytes))
 
-func init() {
-	//handle randBytes error
-	if raerr != nil {
-		panic(raerr)
-	}
-}
-
-var (
-	foldername      = flag.String("f", "", "Folder containing files to be encrypted.\n		Note: Your original files are not deleted. \nIt is not recursive, Subfolders is not encrypted.")
+	foldername      = flag.String("f", "", "Folder containing files to be encrypted.\nIt is not recursive, Subfolders is not encrypted.")
 	outputfile      = flag.String("o", "data.pack", "The file to which your encrypted data will be written. \n If there is a file with the same name, you will be warned.")
-	keyvalue        = flag.String("k", sKeyDefault, "Key for encrypting files. It must be 16, 24, or 32 lenght in bytes.\nIf this parameter is null, the tool generates one randomly byte  and prints value to the console.")
-	tablefile       = flag.String("t", "PaketTable.go", "The go file to be written for Paket to read. \n When compiling this file, you must import it into your program. \n It is created as 'package main.'")
-	addshaval       = flag.Bool("h", true, "Writes hash of original and encrypted versions of the files to table.\nThis is required for security. \nIf left null, hash checks will not work.")
+	keyvalue        = flag.String("k", "", "Key for encrypting files. It must be 16, 24 or 32 lenght in bytes.\nIf this parameter is null, the tool generates one randomly byte  and prints value to the console.")
+	tablefile       = flag.String("t", "PaketTable.go", "The go file to be written for Paket to read. \n When compiling this file, you must import it into your program. \n It is created as \"package main.\"")
+	addshaval       = flag.Bool("h", true, "Writes hash of original and encrypted versions of the files to table.\nThis is required for security. \nIf null, hash checks will not work.")
 	showprogressval = flag.Bool("s", true, "prints progress steps to the console. For example, which file is currently encrypting, etc.")
 )
 
 func main() {
-	flag.Parse()
+
 	if *foldername == "" {
 		fmt.Println("\"-fn\" parameter cannot be null.\nSee", os.Args[0], "-help")
 		os.Exit(1)
 	}
-	skey := *keyvalue
-	keyByte := []byte(skey)
-	keyByteLen := len(keyByte)
-	if !confirmatorLen(keyByteLen) {
-		fmt.Println("Exiting. \nWrong key lenght. Lenght: (bytes)", keyByteLen)
+	var useKey []byte
+
+	if *keyvalue == "" {
+		useKey = []byte(KeyDefault[:32])
+		fmt.Printf("Your random key: %s\n", KeyDefault[:32])
+	} else {
+		useKey = []byte(*keyvalue)
+		fmt.Printf("Your key is: %s\n", *keyvalue)
+	}
+
+	if !confirmatorLen(len(useKey)) {
+		fmt.Println("Wrong key lenght", len(useKey))
 		os.Exit(1)
 	}
 
 	if paket.Exists(*outputfile) {
-		fmt.Printf("Exiting.\nThere is a file with this name (%s). You can rerun cmd tool  under a different name, rename the existing file, or delete it.", *outputfile)
+		fmt.Printf("There is a file with this name (%s). You can rerun cmd tool  under a different name, rename the existing file, or delete it.", *outputfile)
 		os.Exit(1)
 	}
 	if paket.Exists(*tablefile) {
 		fmt.Println("The table file will be recreate.")
 	}
-	if *keyvalue == sKeyDefault {
-		fmt.Println("❗❕ Warning! Your random key. Please note:", *keyvalue)
-	} else {
-		fmt.Println("❗❕ Warning! Your key is:", *keyvalue)
-	}
+
 	gotablefile, err := os.Create(*tablefile)
 	defer gotablefile.Close()
 	errHandler(err)
@@ -86,12 +80,12 @@ func main() {
 		if !file.IsDir() {
 			name := file.Name()
 			if show {
-				fmt.Printf("%s file is encrypting. Size: %0.004f MB\n", name, float32(file.Size())/100000.0)
+				fmt.Printf("%s file is encrypting. Size: %0.03f MB\n", name, float64(file.Size())/1024.0/1024.0)
 			}
 			content, err := ioutil.ReadFile(*foldername + "/" + name)
 			errHandler(err)
 			orgLen := len(content)
-			encData, _ := paket.Encrypt(keyByte, content)
+			encData, _ := paket.Encrypt(useKey, content)
 			encLen := len(encData)
 			orgSha := fmt.Sprintf("%x", sha256.Sum256(content))
 			encSha := fmt.Sprintf("%x", sha256.Sum256(encData))
@@ -140,4 +134,12 @@ func confirmatorLen(l int) bool {
 		return true
 	}
 	return false
+}
+
+func init() {
+	flag.Parse()
+	//handle randBytes error
+	if raerr != nil {
+		panic(raerr)
+	}
 }
