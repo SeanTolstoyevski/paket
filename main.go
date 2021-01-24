@@ -26,7 +26,6 @@ var (
 	outputfile      = flag.String("o", "data.pack", "The file to which your encrypted data will be written. \n If there is a file with the same name, you will be warned.")
 	keyvalue        = flag.String("k", "", "Key for encrypting files. It must be 16, 24 or 32 lenght in bytes.\nIf this parameter is null, the tool generates one randomly byte  and prints value to the console.")
 	tablefile       = flag.String("t", "PaketTable.go", "The go file to be written for Paket to read. \n When compiling this file, you must import it into your program. \n It is created as \"package main.\"")
-	addshaval       = flag.Bool("h", true, "Writes hash of original and encrypted versions of the files to table.\nThis is required for security. \nIf null, hash checks will not work.")
 	showprogressval = flag.Bool("s", true, "prints progress steps to the console. For example, which file is currently encrypting, etc.")
 )
 

@@ -67,14 +67,10 @@ cmd>paket -help
 Usage of paket.exe:
   -f string
         Folder containing files to be encrypted.
-                        Note: Your original files are not deleted.
         It is not recursive, Subfolders is not encrypted.
-  -h    Writes hash of original and encrypted versions of the files to table.
-        This is required for security.
-        If left null, hash checks will not work. (default true)
   -k string
-        Key for encrypting files. It must be 16, 24, or 32 lenght in bytes.
-        If this parameter is null, the tool generates one randomly byte  and prints value to the console. (default "8882af0e97faefe11953660eec14ea94")
+        Key for encrypting files. It must be 16, 24 or 32 lenght in bytes.
+        If this parameter is null, the tool generates one randomly byte  and prints value to the console.
   -o string
         The file to which your encrypted data will be written.
          If there is a file with the same name, you will be warned. (default "data.pack")
@@ -82,7 +78,7 @@ Usage of paket.exe:
   -t string
         The go file to be written for Paket to read.
          When compiling this file, you must import it into your program.
-         It is created as 'package main.' (default "PaketTable.go")
+         It is created as "package main." (default "PaketTable.go")
 ```
 
 **Warning**: If the key is null, the system randomly generates a key.
