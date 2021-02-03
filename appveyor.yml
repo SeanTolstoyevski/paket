@@ -15,7 +15,7 @@ environment:
       GOVERSION: 1.12
 
 init:
-    - set GOROOT=%GO%
+  - set GOROOT=%GO%
   - set GOTOOLDIR=%GO%\pkg\tool\windows_amd64
   - "%GO%\\bin\\go.exe version"
   - "%GO%\\bin\\go.exe env"
