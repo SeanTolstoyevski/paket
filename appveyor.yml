@@ -18,3 +18,4 @@ test_script:
   - go test ./...
   - cd c:\gopath\src\github.com\SeanTolstoyevski\paket\examples\readAndWriteDisk
   - go build .
+  - readAndWriteDisk.exe
