@@ -3,19 +3,28 @@ build: off
 clone_folder: c:\gopath\src\github.com\SeanTolstoyevski\paket
 
 environment:
-  GOPATH: c:\gopath
-
-stack: go 1.10
+  GOPATH: C:\gopath
+  matrix:
+    - GO: "c:\\go"
+      GOVERSION: 15.6
+    - GO: "C:\\go114"
+      GOVERSION: 1.14
+    - GO: "C:\\go113"
+      GOVERSION: 1.13
+    - GO: "C:\\go112"
+      GOVERSION: 1.12
 
 init:
-  - go version
-  - go env
+    - set GOROOT=%GO%
+  - set GOTOOLDIR=%GO%\pkg\tool\windows_amd64
+  - "%GO%\\bin\\go.exe version"
+  - "%GO%\\bin\\go.exe env"
 
 before_test:
-  - go vet ./...
+  - "%GO%\\bin\\go.exe vet ./..."
 
 test_script:
-  - go test ./...
+  - "%GO%\\bin\\go.exe test ./..."
   - cd c:\gopath\src\github.com\SeanTolstoyevski\paket\examples\readAndWriteDisk
-  - go build .
+  - "%GO%\\bin\\go.exe build ."
   - readAndWriteDisk.exe
