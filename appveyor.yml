@@ -9,9 +9,12 @@ stack: go 1.10
 
 init:
   - go version
+  - go env
 
 before_test:
   - go vet ./...
 
 test_script:
   - go test ./...
+  - cd c:\gopath\src\github.com\SeanTolstoyevski\paket\examples\readAndWriteDisk
+  - go build .
