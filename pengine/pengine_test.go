@@ -47,7 +47,7 @@ func TestNew(t *testing.T) {
 		t.Error("Error in GetLen.", err)
 	}
 	if enclen == 0 || orglen == 0 || orglen < 1 || enclen < 1 {
-		t.Error("Error in lenght  query. The wrong value.", enclen, orglen)
+		t.Error("Error in length   query. The wrong value.", enclen, orglen)
 	}
 	_, sha, err := datas.GetFile("George Orwell - Animal Farm.pdf", true, true)
 	if err != nil {

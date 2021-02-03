@@ -24,7 +24,7 @@ var (
 
 	foldername      = flag.String("f", "", "Folder containing files to be encrypted.\nIt is not recursive, Subfolders is not encrypted.")
 	outputfile      = flag.String("o", "data.pack", "The file to which your encrypted data will be written. \n If there is a file with the same name, you will be warned.")
-	keyvalue        = flag.String("k", "", "Key for encrypting files. It must be 16, 24 or 32 lenght in bytes.\nIf this parameter is null, the tool generates one randomly byte  and prints value to the console.")
+	keyvalue        = flag.String("k", "", "Key for encrypting files. It must be 16, 24 or 32 length in bytes.\nIf this parameter is null, the tool generates one randomly byte  and prints value to the console.")
 	tablefile       = flag.String("t", "PaketTable.go", "The go file to be written for Paket to read. \n When compiling this file, you must import it into your program. \n It is created as \"package main.\"")
 	showprogressval = flag.Bool("s", true, "prints progress steps to the console. For example, which file is currently encrypting, etc.")
 )
@@ -46,7 +46,7 @@ func main() {
 	}
 
 	if !confirmatorLen(len(useKey)) {
-		fmt.Println("Wrong key lenght", len(useKey))
+		fmt.Println("Wrong key length", len(useKey))
 		os.Exit(1)
 	}
 

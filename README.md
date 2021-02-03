@@ -69,7 +69,7 @@ Usage of paket.exe:
         Folder containing files to be encrypted.
         It is not recursive, Subfolders is not encrypted.
   -k string
-        Key for encrypting files. It must be 16, 24 or 32 lenght in bytes.
+        Key for encrypting files. It must be 16, 24 or 32 length in bytes.
         If this parameter is null, the tool generates one randomly byte  and prints value to the console.
   -o string
         The file to which your encrypted data will be written.
