@@ -30,7 +30,7 @@ The world of encryption and encryption is a **complex  topic**. It is important 
 
 * Is it really secure? How secure is it?
 
-Frankly the person who wants to get the data can crack anything if he or she  tries. Especially if the program you are distributing runs directly on the user's computer and all data is with the program. However, what AES and Package do is complex enough.  
+Frankly the person who wants to get the data can crack anything if tries. Especially if the program you are distributing runs directly on the user's computer and all data is with the program. However, what AES and Package do is complex enough.  
 Don't Remember, **every executable file is sensitive to disassembly**.  
 You can pass your files through other complex processes before encrypting them. However, this causes your program to load files into memory slowly at run time.
 
@@ -64,24 +64,20 @@ Let's run the `-help` command of the Paket to see if it has been installed succe
 
 ```cmd
 cmd>paket -help
-Usage of paket.exe:
+Usage of paket:
   -f string
-        Folder containing files to be encrypted.
-        It is not recursive, Subfolders is not encrypted.
+        Folder containing files to be encrypted. It is not recursive, Subfolders is not encrypted.
   -k string
-        Key for encrypting files. It must be 16, 24 or 32 length in bytes.
-        If this parameter is null, the tool generates one randomly byte  and prints value to the console.
+        Key for encrypting files. It must be 16, 24 or 32 lenght in bytes. If this parameter is null, the tool generates one randomly byte  and prints value to the console.
   -o string
-        The file to which your encrypted data will be written.
-         If there is a file with the same name, you will be warned. (default "data.pack")
+        The file to which your encrypted data will be written. If there is a file with the same name, you will be warned. (default "data.pack")
   -s    prints progress steps to the console. For example, which file is currently encrypting, etc. (default true)
   -t string
-        The go file to be written for Paket to read.
-         When compiling this file, you must import it into your program.
-         It is created as "package main." (default "PaketTable.go")
+        The go file to be written for Paket to read. When compiling this file, you must import it into your program.
+        It is created as "package main." (default "PaketTable.go")
 ```
 
-**Warning**: If the key is null, the system randomly generates a key.
+**Warning**: If the key is null, the system randomly generates a key. You must then save this key. Paket does not write the randomly generated key.
 
 ### Create a package file with cmd tool
 
@@ -92,7 +88,7 @@ You can create a package with something like:
 Example output:
 
 ```cmd
-❗❕ Warning! Your random key. Please note: 092f8e0b25b0eeea32037e716dfcf2bc
+Your random key: 092f8e0b25b0eeea32037e716dfcf2bc
 3 files were found in mydatas folder.
 Comedy of Errors (complete text) - Shakespeare.txt file is encrypting. Size: 0.9117 MB
 George Orwell - Animal Farm.pdf file is encrypting. Size: 5.5276 MB
@@ -118,17 +114,11 @@ import (
 	paket "github.com/SeanTolstoyevski/paket/pengine"
 )
 
-//The map vault for datas. The init function writing the required data.
-var Data = make(paket.Datas)
-
-// The name of the folder from which the files were was taken. Information is writing by init.
-var foldername string
-
-func init() {
-	foldername = "datas"
-	Data["Comedy of Errors (complete text) - Shakespeare.txt"] = paket.Values{"0", "91189", "91173", "91189", "2aa62dd2d930ed5d8e1c3a33fba4d8525e16448b12d567f5808452b94cacf693", "063b28be3d49e30710546c06b845e87ef9af811f01f7ef716be1f4516657d2d3"}
-	Data["George Orwell - Animal Farm.pdf"] = paket.Values{"91189", "643961", "552756", "552772", "2d8d5810046a78daea56adcf73497b6f331023a0a2cb700db4bb029ca1425573", "86a5e5508ce4f8912f6f62b7c06c51134beb86722fa6ba670751ce727c3e081f"}
-	Data["openal_soft_readme.md"] = paket.Values{"643961", "646858", "2881", "2897", "4034ec4242e7a700e2586f6520941599230e7bc8509ca60950e570df213c49ae", "0f16e1d5e7bbc82b1cb067190db8abc6aa8f00507395710095cc5cd45deb4d2a"}
+//The map vault for datas.
+var Data = map[string]paket.Values{
+	"Comedy of Errors (complete text) - Shakespeare.txt" : paket.Values{"0", "91189", "91173", "91189", "2aa62dd2d930ed5d8e1c3a33fba4d8525e16448b12d567f5808452b94cacf693", "063b28be3d49e30710546c06b845e87ef9af811f01f7ef716be1f4516657d2d3"},
+	"George Orwell - Animal Farm.pdf" : paket.Values{"91189", "643961", "552756", "552772", "2d8d5810046a78daea56adcf73497b6f331023a0a2cb700db4bb029ca1425573", "86a5e5508ce4f8912f6f62b7c06c51134beb86722fa6ba670751ce727c3e081f"},
+	"openal_soft_readme.md" : paket.Values{"643961", "646858", "2881", "2897", "4034ec4242e7a700e2586f6520941599230e7bc8509ca60950e570df213c49ae", "0f16e1d5e7bbc82b1cb067190db8abc6aa8f00507395710095cc5cd45deb4d2a"},
 }
 ```
 
@@ -137,8 +127,6 @@ func init() {
 ## Examples
 
 If you want you can examine the codes in the [examples folder](https://github.com/SeanTolstoyevski/paket/examples).
-
-
 
 
 ## 😋 If you like this

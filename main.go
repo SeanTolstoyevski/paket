@@ -22,10 +22,10 @@ var (
 	randBytes, raerr = paket.CreateRandomBytes(32)
 	KeyDefault       = fmt.Sprintf("%x", sha256.Sum256(randBytes))
 
-	foldername      = flag.String("f", "", "Folder containing files to be encrypted.\nIt is not recursive, Subfolders is not encrypted.")
-	outputfile      = flag.String("o", "data.pack", "The file to which your encrypted data will be written. \n If there is a file with the same name, you will be warned.")
-	keyvalue        = flag.String("k", "", "Key for encrypting files. It must be 16, 24 or 32 length in bytes.\nIf this parameter is null, the tool generates one randomly byte  and prints value to the console.")
-	tablefile       = flag.String("t", "PaketTable.go", "The go file to be written for Paket to read. \n When compiling this file, you must import it into your program. \n It is created as \"package main.\"")
+	foldername      = flag.String("f", "", "Folder containing files to be encrypted. It is not recursive, Subfolders is not encrypted.")
+	outputfile      = flag.String("o", "data.pack", "The file to which your encrypted data will be written. If there is a file with the same name, you will be warned.")
+	keyvalue        = flag.String("k", "", "Key for encrypting files. It must be 16, 24 or 32 lenght in bytes. If this parameter is null, the tool generates one randomly byte  and prints value to the console.")
+	tablefile       = flag.String("t", "PaketTable.go", "The go file to be written for Paket to read. When compiling this file, you must import it into your program.\nIt is created as \"package main.\"")
 	showprogressval = flag.Bool("s", true, "prints progress steps to the console. For example, which file is currently encrypting, etc.")
 )
 
@@ -46,7 +46,7 @@ func main() {
 	}
 
 	if !confirmatorLen(len(useKey)) {
-		fmt.Println("Wrong key length", len(useKey))
+		fmt.Println("Wrong key lenght", len(useKey))
 		os.Exit(1)
 	}
 
@@ -74,7 +74,7 @@ func main() {
 	if show {
 		fmt.Printf("%d files were found in %s folder.\n", len(listFiles), *foldername)
 	}
-	gotablefile.Write([]byte(fmt.Sprintf(toptemplate, *foldername)))
+	gotablefile.Write([]byte(toptemplate))
 	for _, file := range listFiles {
 		if !file.IsDir() {
 			name := file.Name()
@@ -106,7 +106,7 @@ func errHandler(err error) {
 	}
 }
 
-var toptemplate string = `//important: You can edit this file. However, you need to know what you are doing.
+var toptemplate string = `// important: You can edit this file. However, you need to know what you are doing.
 // *panic* may occur.
 
 package main
@@ -115,17 +115,11 @@ import (
 	paket "github.com/SeanTolstoyevski/paket/pengine"
 )
 
-//The map vault for datas. The init function writing the required data.
-var Data = make(paket.Datas)
-
-// The name of the folder from which the files were was taken. Information is writing by init.
-var foldername string
-
-func init() {
-	foldername = "%s"
+// The map vault for datas.
+var Data = map[string]paket.Values{
 `
 
-var goTemplate string = `	Data["%s"] = paket.Values{"%s", "%s", "%s", "%s", "%s", "%s"}
+var goTemplate string = `	"%s" : paket.Values{"%s", "%s", "%s", "%s", "%s", "%s"},
 `
 
 func confirmatorLen(l int) bool {
