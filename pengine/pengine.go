@@ -154,7 +154,7 @@ func New(key []byte, file string, table Datas) (*Paket, error) {
 	l := len(key)
 	if l == 16 || l == 24 || l == 32 {
 		if !Exists(file) {
-			panic(string(file + " paket not found."))
+			panic(file + " paket not found.")
 		}
 
 		f, err := os.Open(file)
@@ -197,17 +197,18 @@ func New(key []byte, file string, table Datas) (*Paket, error) {
 // it is better to pass both values to true to this function.
 func (p *Paket) GetFile(filename string, decrypt, shaControl bool) (*[]byte, bool, error) {
 	file, found := p.Table[filename]
-	var content []byte
 	if !found {
-		panic(string("File not found on map: " + filename))
+		panic("File not found on map: " + filename)
 	}
+	var content []byte
+
 	length, err := strconv.Atoi(file[3])
 	if err != nil {
-		panic(err)
+		return nil, false, err
 	}
 	start, err := strconv.Atoi(file[0])
 	if err != nil {
-		panic(err)
+		return nil, false, err
 	}
 	content = make([]byte, length)
 	_, serr := p.file.Seek(int64(start), 0)
@@ -218,7 +219,7 @@ func (p *Paket) GetFile(filename string, decrypt, shaControl bool) (*[]byte, boo
 	if rerr != nil {
 		return nil, false, rerr
 	}
-	switch shaControl {
+	switch decrypt{
 	case true:
 		decdata, err := Decrypt(p.Key, content)
 		if err != nil {
@@ -229,7 +230,7 @@ func (p *Paket) GetFile(filename string, decrypt, shaControl bool) (*[]byte, boo
 			encSha := []byte(file[4])
 			return &decdata, bytes.Equal(decSha, encSha), nil
 		}
-		return &decdata, false, nil
+		return &decdata, false, nil
 	case false:
 		if shaControl {
 			forgSha := []byte(file[5])

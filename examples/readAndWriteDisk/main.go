@@ -24,7 +24,7 @@ func main() {
 	for key := range Data {
 		wf, err := os.Create(key)
 		errHandler(err)
-		file, _, err := encFiles.GetFile(key, true, true)
+		file, _, err := encFiles.GetFile(key, true, false)
 		errHandler(err)
 		fmt.Printf("%s file is writing...\n", key)
 		wf.Write(*file)
