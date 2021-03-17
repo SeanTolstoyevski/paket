@@ -230,7 +230,7 @@ func (p *Paket) GetFile(filename string, decrypt, shaControl bool) (*[]byte, boo
 			encSha := []byte(file[4])
 			return &decdata, bytes.Equal(decSha, encSha), nil
 		}
-		return &decdata, false, nil
+		return &decdata, false, nil
 	case false:
 		if shaControl {
 			forgSha := []byte(file[5])
