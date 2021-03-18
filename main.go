@@ -119,7 +119,7 @@ import (
 var Data = map[string]paket.Values{
 `
 
-var goTemplate string = `	"%s" : paket.Values{"%s", "%s", "%s", "%s", "%s", "%s"},
+var goTemplate string = `	"%s" : {"%s", "%s", "%s", "%s", "%s", "%s"},
 `
 
 func confirmatorLen(l int) bool {
