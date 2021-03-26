@@ -1,4 +1,4 @@
-# Problems arising how when using the paket.
+# Problems arising when using the **paket**.
 
 You can use issues for discussions on how to fix these issues.
 
