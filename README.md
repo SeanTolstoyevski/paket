@@ -132,6 +132,7 @@ If you want you can examine the codes in the [examples folder](https://github.co
 ## 😋 If you like this
 
 * 📝🖊 Please consider creating a PR or emailing me for grammatical errors and other language issues in documents. English is **not my native language**.
+ - And we have a few not fixed issues right now.  [🤔 Any ideas or code for these](https://github.com/SeanTolstoyevski/paket/blob/master/developing_and_contribute.md).
 
 * If you can test for Linux and Darwin, that would be a great  for me. I am a blind software developer. I cannot set up an environment in Linux that can develop and test these projects. Linux's accessibility is not as good as Windows. No mac. I'll try to test as much as possible with the built-in `go test` though.
 

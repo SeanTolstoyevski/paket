@@ -219,7 +219,7 @@ func (p *Paket) GetFile(filename string, decrypt, shaControl bool) (*[]byte, boo
 	if rerr != nil {
 		return nil, false, rerr
 	}
-	switch decrypt{
+	switch decrypt {
 	case true:
 		decdata, err := Decrypt(p.Key, content)
 		if err != nil {
