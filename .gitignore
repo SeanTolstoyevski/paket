@@ -16,3 +16,4 @@
 *.ini
 *.html
 PaketTable.go
+*.log
