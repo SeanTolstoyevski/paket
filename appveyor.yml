@@ -18,13 +18,8 @@ init:
   - set GOROOT=%GO%
   - set GOTOOLDIR=%GO%\pkg\tool\windows_amd64
   - "%GO%\\bin\\go.exe version"
-  - "%GO%\\bin\\go.exe env"
 
 before_test:
   - "%GO%\\bin\\go.exe vet ./..."
 
-test_script:
-  - "%GO%\\bin\\go.exe test ./..."
-  - cd c:\gopath\src\github.com\SeanTolstoyevski\paket\examples\readAndWriteDisk
-  - "%GO%\\bin\\go.exe build ."
-  - readAndWriteDisk.exe
+# test_script:

@@ -20,32 +20,37 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"crypto/sha256"
+	"sync"
 	"errors"
 	"fmt"
 	"io"
 	"os"
-	"strconv"
+)
+
+var (
+	MinimumMapValueError = errors.New("map cannot be less than 1 in length")
 )
 
 // type declaration for map values.
-//
-// 0: start position
-//
-// 1: end position
-//
-// 2: length of the original file.
-//
-// 3: length of the encrypted data.
-// Note: Gives [2]-[1] length of file. However, it may be more correct to write for security.
-//
-//4: Hash of the original file.
-//
-//5: Hash of encrypted data.
-//
-// 0, 1, 2 and 3 are required values. 4 and 5 should be written for security.
-//
-// If 4 and 5 index is null, sha controls will not work. This makes it difficult for you to know the security of your content.
-type Values [6]string
+type Values struct {
+	// start position
+	StartPos int
+
+	// end position
+	EndPos int
+
+	// length of the original file.
+	OriginalLenght int
+
+	// length of the encrypted data.
+	EncryptLenght int
+
+	// Hash of the original file.
+	HashOriginal string
+
+	// Hash of encrypted data.
+	HashEncrypt string
+}
 
 // type definition for the Paket.
 //
@@ -128,6 +133,7 @@ type Paket struct {
 	// Key value for reading the file's data.
 	// As a warning, you shouldn't just create a plaintext key.
 	Key []byte
+	paketFileName		string
 	// Map value that keep the information of files in Paket.
 	// It must be at least 1 length.
 	// Otherwise, panic occurs at runtime.
@@ -137,6 +143,7 @@ type Paket struct {
 	//non-exported value created for access the file.
 	// This value is opened by New with filename parameter.
 	file *os.File
+	globMut  sync.Mutex
 }
 
 // New Creates a new Package method.
@@ -150,25 +157,25 @@ type Paket struct {
 // There must be a minimum of 1 file in the table.
 //
 // After getting all the data you need, should be terminated with  Close.
-func New(key []byte, file string, table Datas) (*Paket, error) {
+func New(key []byte, paketFileName  string, table Datas) (*Paket, error) {
 	l := len(key)
 	if l == 16 || l == 24 || l == 32 {
-		if !Exists(file) {
-			panic(file + " paket not found.")
+		if !Exists(paketFileName) {
+			panic(paketFileName + " paket not found.")
 		}
 
-		f, err := os.Open(file)
+		f, err := os.Open(paketFileName)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 
 		fInfo, ferr := f.Stat()
 		if ferr != nil {
-			panic(ferr)
+			return nil, err
 		}
 
 		if fInfo.Size() > 0 {
-			return &Paket{file: f, Table: table, Key: key}, nil
+			return &Paket{file: f, Table: table, Key: key, paketFileName: paketFileName}, nil
 		}
 		perr := "there is no data in the file: " + f.Name()
 		panic(perr)
@@ -198,42 +205,44 @@ func New(key []byte, file string, table Datas) (*Paket, error) {
 func (p *Paket) GetFile(filename string, decrypt, shaControl bool) (*[]byte, bool, error) {
 	file, found := p.Table[filename]
 	if !found {
-		panic("File not found on map: " + filename)
+		return nil, false, errors.New("File not found on map: " + filename)
 	}
-	var content []byte
 
-	length, err := strconv.Atoi(file[3])
+	p.globMut.Lock()
+	defer p.globMut.Unlock()
+
+	// We need the length of the encrypted data to be able to load to memory the file
+	length := file.EncryptLenght
+	// The position where our new file starts. Should be calculated based on the encrypted file length rather than the original file
+	start := file.StartPos
+
+	content := make([]byte, length)
+
+	// We go to the position of file
+	_, err := p.file.Seek(int64(start), 0)
 	if err != nil {
 		return nil, false, err
 	}
-	start, err := strconv.Atoi(file[0])
-	if err != nil {
-		return nil, false, err
-	}
-	content = make([]byte, length)
-	_, serr := p.file.Seek(int64(start), 0)
-	if serr != nil {
-		return nil, false, serr
-	}
+	// We read it to the position we want. So in this case, up to the position  where the encrypted data ends. We Alocated the *content* variable
 	_, rerr := p.file.Read(content)
 	if rerr != nil {
 		return nil, false, rerr
 	}
 	switch decrypt {
 	case true:
-		decdata, err := Decrypt(p.Key, content)
+		decryptedData, err := Decrypt(p.Key, content)
 		if err != nil {
 			return nil, false, err
 		}
 		if shaControl {
-			decSha := []byte(fmt.Sprintf("%x", sha256.Sum256(decdata)))
-			encSha := []byte(file[4])
-			return &decdata, bytes.Equal(decSha, encSha), nil
+			decryptedHash := []byte(fmt.Sprintf("%x", sha256.Sum256(decryptedData)))
+			encryptedHash := []byte(file.HashEncrypt)
+			return &decryptedData, bytes.Equal(decryptedHash, encryptedHash), nil
 		}
-		return &decdata, false, nil
+		return &decryptedData, false, nil
 	case false:
 		if shaControl {
-			forgSha := []byte(file[5])
+			forgSha := []byte(file.HashEncrypt)
 			corgSha := []byte(fmt.Sprintf("%x", sha256.Sum256(content)))
 			return &content, bytes.Equal(corgSha, forgSha), nil
 		}
@@ -243,29 +252,62 @@ func (p *Paket) GetFile(filename string, decrypt, shaControl bool) (*[]byte, boo
 	}
 }
 
+
+// GetGoroutineSafe created to securely retrieve data when using with multiple goroutines.
+// In any case, it only returns decrypted data.
+//
+// It does not do any hash checking.
+func (p *Paket) GetGoroutineSafe(name string) ([]byte, error) {
+	file, found := p.Table[name]
+	if !found {
+		return nil, errors.New("File not found on map: " + name)
+	}
+	length := file.EncryptLenght
+	encryptedLenght, _ := p.GetLen()
+	if length > encryptedLenght[1] {
+		return nil, errors.New("more length than file size")
+	}
+	start := file.StartPos
+
+	f, err := os.Open(p.paketFileName)
+		if err != nil {
+			return nil, err
+		}
+	defer f.Close()
+
+	if _, err := f.Seek(int64(start), 0); err  != nil {
+		return nil, err
+	}
+	content := make([]byte, length)
+	if _, err := f.Read(content); err != nil {
+		return nil, err
+	}
+	decryptedData, err := Decrypt(p.Key, content)
+	if err != nil {
+			return nil, err
+		}
+
+	return decryptedData, nil
+}
+
 // GetLen Returns the original and encrypted lengths of all files contained in Paket.
-// First variable refers to the original, second variable to the encrypted data.
+// 0 index refers to the original, 1  index to the encrypted data.
 // In the meantime, no control is made. The same will return as the values are written into the table.
 //
 // Normally values should be in bytes.
 //
-// returns an error if length is less than 1. In this case, other variables are 0.
-func (p *Paket) GetLen() (int, int, error) {
-	var orgval int
-	var encval int
+// returns an error if length is less than 1. In this case, other  things are 0.
+func (p *Paket) GetLen() ([2]int, error) {
+	values := [2]int{}
 	if len(p.Table) > 0 {
 		for _, value := range p.Table {
-			// oi = original integer
-			// ei = encrypted integer
-			oi, _ := strconv.Atoi(value[2])
-			ei, _ := strconv.Atoi(value[3])
-			orgval += oi
-			encval += ei
+			values[0] += value.OriginalLenght
+			values[1] += value.EncryptLenght
 		}
-		return orgval, encval, nil
+		return values, nil
 	}
 
-	return 0, 0, errors.New("map cannot be less than 1 in length")
+	return values, MinimumMapValueError
 }
 
 // Close Closes the opened file (see Paket.file (non-exported)).
@@ -284,9 +326,11 @@ func (p *Paket) Close() error {
 	return err
 }
 
-// Source: https://stackoverflow.com/a/12527546/13431469
-//
+
 // a guarantee about the existence of file.
+//
+// Source: https://stackoverflow.com/a/12527546/13431469
+// Thanks to SO user.
 func Exists(name string) bool {
 	if _, err := os.Stat(name); err != nil {
 		if os.IsNotExist(err) {
