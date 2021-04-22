@@ -20,11 +20,11 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"crypto/sha256"
-	"sync"
 	"errors"
 	"fmt"
 	"io"
 	"os"
+	"sync"
 )
 
 var (
@@ -132,8 +132,8 @@ func Decrypt(key, data []byte) ([]byte, error) {
 type Paket struct {
 	// Key value for reading the file's data.
 	// As a warning, you shouldn't just create a plaintext key.
-	Key []byte
-	paketFileName		string
+	Key           []byte
+	paketFileName string
 	// Map value that keep the information of files in Paket.
 	// It must be at least 1 length.
 	// Otherwise, panic occurs at runtime.
@@ -142,8 +142,8 @@ type Paket struct {
 	Table Datas
 	//non-exported value created for access the file.
 	// This value is opened by New with filename parameter.
-	file *os.File
-	globMut  sync.Mutex
+	file    *os.File
+	globMut sync.Mutex
 }
 
 // New Creates a new Package method.
@@ -157,7 +157,7 @@ type Paket struct {
 // There must be a minimum of 1 file in the table.
 //
 // After getting all the data you need, should be terminated with  Close.
-func New(key []byte, paketFileName  string, table Datas) (*Paket, error) {
+func New(key []byte, paketFileName string, table Datas) (*Paket, error) {
 	l := len(key)
 	if l == 16 || l == 24 || l == 32 {
 		if !Exists(paketFileName) {
@@ -252,7 +252,6 @@ func (p *Paket) GetFile(filename string, decrypt, shaControl bool) (*[]byte, boo
 	}
 }
 
-
 // GetGoroutineSafe created to securely retrieve data when using with multiple goroutines.
 // In any case, it only returns decrypted data.
 //
@@ -270,12 +269,12 @@ func (p *Paket) GetGoroutineSafe(name string) ([]byte, error) {
 	start := file.StartPos
 
 	f, err := os.Open(p.paketFileName)
-		if err != nil {
-			return nil, err
-		}
+	if err != nil {
+		return nil, err
+	}
 	defer f.Close()
 
-	if _, err := f.Seek(int64(start), 0); err  != nil {
+	if _, err := f.Seek(int64(start), 0); err != nil {
 		return nil, err
 	}
 	content := make([]byte, length)
@@ -284,8 +283,8 @@ func (p *Paket) GetGoroutineSafe(name string) ([]byte, error) {
 	}
 	decryptedData, err := Decrypt(p.Key, content)
 	if err != nil {
-			return nil, err
-		}
+		return nil, err
+	}
 
 	return decryptedData, nil
 }
@@ -325,7 +324,6 @@ func (p *Paket) Close() error {
 	}
 	return err
 }
-
 
 // a guarantee about the existence of file.
 //
