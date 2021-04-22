@@ -1,6 +1,6 @@
 # 🔑 Paket – A vault to packaging and encrypt/decrypt your files in golang!
 
-[pkg.go.dev](https://pkg.go.dev/github.com/SeanTolstoyevski/paket/) | [![Go Report Card](https://goreportcard.com/badge/github.com/SeanTolstoyevski/paket)](https://goreportcard.com/report/github.com/SeanTolstoyevski/paket)
+[![go.pkg.dev](https://pkg.go.dev/badge/github.com/SeanTolstoyevski/paket.svg)](https://pkg.go.dev/github.com/SeanTolstoyevski/paket) | [![Go Report Card](https://goreportcard.com/badge/github.com/SeanTolstoyevski/paket)](https://goreportcard.com/report/github.com/SeanTolstoyevski/paket)
 
 ## Table of Contents
 
