@@ -28,6 +28,7 @@ import (
 )
 
 var (
+	// If there is no data in the map sent to New, the functions you use will return this error.
 	MinimumMapValueError = errors.New("map cannot be less than 1 in length")
 )
 
@@ -133,6 +134,8 @@ type Paket struct {
 	// Key value for reading the file's data.
 	// As a warning, you shouldn't just create a plaintext key.
 	Key           []byte
+	// name of the file from which the data was taken.
+	// Required for various functions.
 	paketFileName string
 	// Map value that keep the information of files in Paket.
 	// It must be at least 1 length.
@@ -140,9 +143,13 @@ type Paket struct {
 	//
 	// Usually created by the cmd tool.
 	Table Datas
+
 	//non-exported value created for access the file.
 	// This value is opened by New with filename parameter.
+	// file released with the Close function.
 	file    *os.File
+
+	// Used to prevent conflicts in GetFile. For files requested at the same time.
 	globMut sync.Mutex
 }
 
@@ -202,7 +209,7 @@ func New(key []byte, paketFileName string, table Datas) (*Paket, error) {
 // Both values do not have to be true. However, it may be good to generate a control mechanism like hash with your own work.
 // The decrypt (bool) value has been added for convenience. As a recommendation,
 // it is better to pass both values to true to this function.
-func (p *Paket) GetFile(filename string, decrypt, shaControl bool) (*[]byte, bool, error) {
+func (p *Paket) GetFile(filename string, decrypt, shaControl bool) ([]byte, bool, error) {
 	file, found := p.Table[filename]
 	if !found {
 		return nil, false, errors.New("File not found on map: " + filename)
@@ -237,18 +244,18 @@ func (p *Paket) GetFile(filename string, decrypt, shaControl bool) (*[]byte, boo
 		if shaControl {
 			decryptedHash := []byte(fmt.Sprintf("%x", sha256.Sum256(decryptedData)))
 			encryptedHash := []byte(file.HashEncrypt)
-			return &decryptedData, bytes.Equal(decryptedHash, encryptedHash), nil
+			return decryptedData, bytes.Equal(decryptedHash, encryptedHash), nil
 		}
-		return &decryptedData, false, nil
+		return decryptedData, false, nil
 	case false:
 		if shaControl {
 			forgSha := []byte(file.HashEncrypt)
 			corgSha := []byte(fmt.Sprintf("%x", sha256.Sum256(content)))
-			return &content, bytes.Equal(corgSha, forgSha), nil
+			return content, bytes.Equal(corgSha, forgSha), nil
 		}
-		return &content, false, nil
+		return content, false, nil
 	default:
-		return &content, false, nil
+		return content, false, nil
 	}
 }
 
@@ -283,9 +290,11 @@ func (p *Paket) GetGoroutineSafe(name string) ([]byte, error) {
 	}
 	decryptedData, err := Decrypt(p.Key, content)
 	if err != nil {
+		content = nil // I don't understand what the gc of Go does sometimes. A guarantee
 		return nil, err
 	}
 
+	content = nil // I don't understand what the gc of Go does sometimes. A guarantee
 	return decryptedData, nil
 }
 
@@ -295,18 +304,17 @@ func (p *Paket) GetGoroutineSafe(name string) ([]byte, error) {
 //
 // Normally values should be in bytes.
 //
-// returns an error if length is less than 1. In this case, other  things are 0.
+// returns an error if length is less than 1(see MinimumMapValueError). This case, other  things are 0.
 func (p *Paket) GetLen() ([2]int, error) {
 	values := [2]int{}
-	if len(p.Table) > 0 {
-		for _, value := range p.Table {
-			values[0] += value.OriginalLenght
-			values[1] += value.EncryptLenght
-		}
-		return values, nil
+	if len(p.Table) < 1  {
+		return values, MinimumMapValueError
 	}
-
-	return values, MinimumMapValueError
+	for _, value := range p.Table {
+		values[0] += value.OriginalLenght
+		values[1] += value.EncryptLenght
+	}
+	return values, nil
 }
 
 // Close Closes the opened file (see Paket.file (non-exported)).
