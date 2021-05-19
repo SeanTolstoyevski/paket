@@ -29,7 +29,7 @@ import (
 
 var (
 	// If there is no data in the map sent to New, the functions you use will return this error.
-	MinimumMapValueError = errors.New("map cannot be less than 1 in length")
+	ErrMinimumMapValue = errors.New("map cannot be less than 1 in length")
 )
 
 // type declaration for map values.
@@ -133,7 +133,7 @@ func Decrypt(key, data []byte) ([]byte, error) {
 type Paket struct {
 	// Key value for reading the file's data.
 	// As a warning, you shouldn't just create a plaintext key.
-	Key           []byte
+	Key []byte
 	// name of the file from which the data was taken.
 	// Required for various functions.
 	paketFileName string
@@ -147,7 +147,7 @@ type Paket struct {
 	//non-exported value created for access the file.
 	// This value is opened by New with filename parameter.
 	// file released with the Close function.
-	file    *os.File
+	file *os.File
 
 	// Used to prevent conflicts in GetFile. For files requested at the same time.
 	globMut sync.Mutex
@@ -304,11 +304,11 @@ func (p *Paket) GetGoroutineSafe(name string) ([]byte, error) {
 //
 // Normally values should be in bytes.
 //
-// returns an error if length is less than 1(see MinimumMapValueError). This case, other  things are 0.
+// returns an error if length is less than 1(see ErrMinimumMapValue). This case, other  things are 0.
 func (p *Paket) GetLen() ([2]int, error) {
 	values := [2]int{}
-	if len(p.Table) < 1  {
-		return values, MinimumMapValueError
+	if len(p.Table) < 1 {
+		return values, ErrMinimumMapValue
 	}
 	for _, value := range p.Table {
 		values[0] += value.OriginalLenght
