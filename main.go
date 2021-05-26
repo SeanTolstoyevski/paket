@@ -86,15 +86,31 @@ func main() {
 			encData, err := paket.Encrypt(useKey, content)
 			errHandler(err)
 			encLen := len(encData)
-			originalHash := fmt.Sprintf("%x", sha256.Sum256(content))
-			EncryptedHash := fmt.Sprintf("%x", sha256.Sum256(encData))
+			originalHash := sha256.Sum256(content)
+			EncryptedHash := sha256.Sum256(encData)
+			orgStringTemplate := "[]byte{"
+			encStringTemplate := "[]byte{"
+
+			for _, oHI := range originalHash {
+				orgStringTemplate += fmt.Sprint(oHI, ", ")
+			}
+			orgStringTemplate = orgStringTemplate[:len(orgStringTemplate)-2] + "}"
+
+			for _, eHI := range EncryptedHash {
+				encStringTemplate += fmt.Sprint(eHI, ", ")
+			}
+	encStringTemplate = encStringTemplate[:len(encStringTemplate)-2] + "}"
+	fmt.Println("org:", orgStringTemplate)
+	fmt.Println("Enc:", len(encStringTemplate))
+
+
 			_, rerr := packFile.Write(encData)
 			errHandler(rerr)
 			start = full
 			full += encLen
 			end = full
 
-			gotablefile.Write([]byte(fmt.Sprintf(goTemplate, name, strconv.Itoa(start), strconv.Itoa(end), strconv.Itoa(orgLen), strconv.Itoa(encLen), originalHash, EncryptedHash)))
+			gotablefile.Write([]byte(fmt.Sprintf(goTemplate, name, strconv.Itoa(start), strconv.Itoa(end), strconv.Itoa(orgLen), strconv.Itoa(encLen), orgStringTemplate, encStringTemplate)))
 		}
 	}
 	gotablefile.Write([]byte("}"))
@@ -118,7 +134,7 @@ import (
 var PaketData = map[string]paket.Values{
 `
 
-var goTemplate string = `	"%s" : {StartPos : %s, EndPos : %s, OriginalLenght : %s, EncryptLenght : %s, HashOriginal : "%s", HashEncrypt : "%s"},
+var goTemplate string = `	"%s" : {StartPos : %s, EndPos : %s, OriginalLenght : %s, EncryptLenght : %s, HashOriginal : %s, HashEncrypt : %s},
 `
 
 func confirmatorLen(l int) bool {

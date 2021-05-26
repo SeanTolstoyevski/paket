@@ -21,7 +21,6 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"errors"
-	"fmt"
 	"io"
 	"os"
 	"sync"
@@ -47,10 +46,10 @@ type Values struct {
 	EncryptLenght int
 
 	// Hash of the original file.
-	HashOriginal string
+	HashOriginal []byte
 
 	// Hash of encrypted data.
-	HashEncrypt string
+	HashEncrypt []byte
 }
 
 // type definition for the Paket.
@@ -242,16 +241,16 @@ func (p *Paket) GetFile(filename string, decrypt, shaControl bool) ([]byte, bool
 			return nil, false, err
 		}
 		if shaControl {
-			decryptedHash := []byte(fmt.Sprintf("%x", sha256.Sum256(decryptedData)))
-			encryptedHash := []byte(file.HashEncrypt)
-			return decryptedData, bytes.Equal(decryptedHash, encryptedHash), nil
+			decryptedHash := sha256.Sum256(decryptedData)
+			encryptedHash := file.HashEncrypt
+			return decryptedData, bytes.Equal(decryptedHash[:], encryptedHash), nil
 		}
 		return decryptedData, false, nil
 	case false:
 		if shaControl {
-			forgSha := []byte(file.HashEncrypt)
-			corgSha := []byte(fmt.Sprintf("%x", sha256.Sum256(content)))
-			return content, bytes.Equal(corgSha, forgSha), nil
+			forgSha := file.HashEncrypt
+			corgSha := sha256.Sum256(content)
+			return content, bytes.Equal(corgSha[:], forgSha), nil
 		}
 		return content, false, nil
 	default:
