@@ -28,7 +28,7 @@ func main() {
 		}
 		fmt.Println("Hash check:", hash,
 			"\nFile name:", fileName,
-			"\nFile lenght:", len(secureData),
+			"\nFile length:", len(secureData),
 		)
 		if !hash {
 			fmt.Println("Warning: in data hash check")

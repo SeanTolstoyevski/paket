@@ -11,8 +11,6 @@ environment:
       GOVERSION: 1.14
     - GO: "C:\\go113"
       GOVERSION: 1.13
-    - GO: "C:\\go112"
-      GOVERSION: 1.12
 
 init:
   - set GOROOT=%GO%
