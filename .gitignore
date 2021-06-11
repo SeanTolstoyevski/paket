@@ -15,6 +15,5 @@
 # vendor/
 *.ini
 *.html
-PaketTable.go
 *.log
 anonymization-information.txt
