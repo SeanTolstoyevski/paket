@@ -7,10 +7,9 @@
 // cmd tool for creating the paket file.
 //
 // A typical use case looks like this.:
-// 	paket -f=a_folder_path -k=my_secret_key -m=cfb -i=124000
+// 	paket -f=a_folder_path -k=my_secret_key -m=cfb -i=24000
 //
 // This command encrypts all the files in the 'a_folder_path' folder with 'my_secret_key' using AES 256, then write the hash information for each file in a table.
-
 package main
 
 import (
