@@ -115,7 +115,7 @@ You should visit the [examples folder](https://github.com/SeanTolstoyevski/paket
 ## 😋 If you like this
 
 * 📝🖊 Please consider creating a PR or emailing me for grammatical errors and other language issues in documents. English is **not my native language**.
-	- And we have a few not fixed issues right now.  [🤔 Any ideas or code for these](https://github.com/SeanTolstoyevski/paket/blob/master/developing_and_contribute.md).
+	- And we have a few not fixed issues right now.  [🤔 Any ideas or code for these](https://github.com/SeanTolstoyevski/paket/blob/master/developing_roadmap_planning_paket.md).
 * 💰🤑 If you don't want to do any of them and want to give financial support (like a cup of french press), you can send an e-mail
 * 🌟⭐ And send a star. This is the greatest favor. I'm looking for a job. Employers are not so optimistic in Turkey against disabled users. But any good project with a few stars can win over employers hearts.
 
